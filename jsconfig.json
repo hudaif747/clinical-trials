@@ -1,8 +1,14 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": "./src",
     "paths": {
-      "*": ["public/src/*"]
+      "examples/*": ["public/src/examples/*"]
     }
-  }
+  },
+  "include": [
+    "src/**/*.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

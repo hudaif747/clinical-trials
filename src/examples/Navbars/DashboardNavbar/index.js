@@ -52,6 +52,7 @@ import {
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
+import ProfileNavbarCard from "additional-components/ProfileNavbarCard";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
@@ -91,22 +92,39 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
 
-  // Render the notifications menu
+  // Render the notifications menu OLD MENU ITEM
+  // const renderMenu = () => (
+  //   <Menu
+  //     anchorEl={openMenu}
+  //     anchorReference={null}
+  //     anchorOrigin={{
+  //       vertical: "bottom",
+  //       horizontal: "left",
+  //     }}
+  //     open={Boolean(openMenu)}
+  //     onClose={handleCloseMenu}
+  //     sx={{ mt: 2 }}
+  //   >
+  //     <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
+  //     <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
+  //     <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+  //   </Menu>
+  // );
+
+  // Render the profile info card at the navbar
   const renderMenu = () => (
     <Menu
       anchorEl={openMenu}
       anchorReference={null}
       anchorOrigin={{
         vertical: "bottom",
-        horizontal: "left",
+        // horizontal: "right",
       }}
       open={Boolean(openMenu)}
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
-      <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
-      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+      <ProfileNavbarCard />
     </Menu>
   );
 
@@ -139,11 +157,19 @@ function DashboardNavbar({ absolute, light, isMini }) {
               <MDInput label="Search here" />
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in/basic">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
+              {/* <Link to="/authentication/sign-in/basic"> */}
+              <IconButton
+                sx={navbarIconButton}
+                size="small"
+                disableRipple
+                aria-controls="notification-menu"
+                aria-haspopup="true"
+                variant="contained"
+                onClick={handleOpenMenu}
+              >
+                <Icon sx={iconsStyle}>account_circle</Icon>
+              </IconButton>
+              {/* </Link> */}
               <IconButton
                 size="small"
                 disableRipple
@@ -164,7 +190,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
               >
                 <Icon sx={iconsStyle}>settings</Icon>
               </IconButton>
-              <IconButton
+              {/* Notification button not required
+               <IconButton
                 size="small"
                 disableRipple
                 color="inherit"
@@ -175,7 +202,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 onClick={handleOpenMenu}
               >
                 <Icon sx={iconsStyle}>notifications</Icon>
-              </IconButton>
+              </IconButton> */}
               {renderMenu()}
             </MDBox>
           </MDBox>
