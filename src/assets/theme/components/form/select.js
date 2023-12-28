@@ -26,7 +26,7 @@ const select = {
     select: {
       display: "grid",
       alignItems: "center",
-      padding: `0 ${pxToRem(12)} !important`,
+      padding: `0 ${pxToRem(12)}`,
 
       "& .Mui-selected": {
         backgroundColor: transparent.main,
@@ -41,7 +41,7 @@ const select = {
     },
 
     icon: {
-      display: "none",
+      display: "inline-block",
     },
   },
 };

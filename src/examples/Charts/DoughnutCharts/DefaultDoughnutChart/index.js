@@ -20,7 +20,8 @@ import PropTypes from "prop-types";
 
 // react-chartjs-2 components
 import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Colors } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -32,52 +33,75 @@ import MDTypography from "components/MDTypography";
 
 // DefaultDoughnutChart configurations
 import configs from "examples/Charts/DoughnutCharts/DefaultDoughnutChart/configs";
+import { Grid } from "@mui/material";
+import DataTable from "examples/Tables/DataTable";
+import authorsTableData from "layouts/tables/data/authorsTableData";
+import doughnutChartTable from "layouts/tables/data/doughnutChartTable";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, Colors, ChartDataLabels);
 
 function DefaultDoughnutChart({ icon, title, description, height, chart }) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {}, chart.cutout);
 
+  console.log("From chart", data);
+
+  const { columns, rows } = doughnutChartTable();
+
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
-      {title || description ? (
-        <MDBox display="flex" px={description ? 1 : 0} pt={description ? 1 : 0}>
-          {icon.component && (
-            <MDBox
-              width="4rem"
-              height="4rem"
-              bgColor={icon.color || "dark"}
-              variant="gradient"
-              coloredShadow={icon.color || "dark"}
-              borderRadius="xl"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              color="white"
-              mt={-5}
-              mr={2}
-            >
-              <Icon fontSize="medium">{icon.component}</Icon>
+      <Grid container display={"flex"}>
+        <Grid item xs={6}>
+          {title || description ? (
+            <MDBox display="flex" px={description ? 1 : 0} pt={description ? 1 : 0}>
+              {icon.component && (
+                <MDBox
+                  width="4rem"
+                  height="4rem"
+                  bgColor={icon.color || "dark"}
+                  variant="gradient"
+                  coloredShadow={icon.color || "dark"}
+                  borderRadius="xl"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  color="white"
+                  mt={-5}
+                  mr={2}
+                >
+                  <Icon fontSize="medium">{icon.component}</Icon>
+                </MDBox>
+              )}
+              <MDBox mt={icon.component ? -2 : 0}>
+                {title && <MDTypography variant="h6">{title}</MDTypography>}
+                <MDBox mb={2}>
+                  <MDTypography component="div" variant="button" color="text">
+                    {description}
+                  </MDTypography>
+                </MDBox>
+              </MDBox>
             </MDBox>
+          ) : null}
+          {useMemo(
+            () => (
+              <MDBox height={height}>
+                <Doughnut data={data} options={options} redraw />
+              </MDBox>
+            ),
+            [chart, height]
           )}
-          <MDBox mt={icon.component ? -2 : 0}>
-            {title && <MDTypography variant="h6">{title}</MDTypography>}
-            <MDBox mb={2}>
-              <MDTypography component="div" variant="button" color="text">
-                {description}
-              </MDTypography>
-            </MDBox>
+        </Grid>
+        <Grid item xs={6}>
+          <MDBox pt={3}>
+            <DataTable
+              table={{ columns, rows }}
+              isSorted={false}
+              entriesPerPage={false}
+              showTotalEntries={false}
+              noEndBorder
+            />
           </MDBox>
-        </MDBox>
-      ) : null}
-      {useMemo(
-        () => (
-          <MDBox height={height}>
-            <Doughnut data={data} options={options} redraw />
-          </MDBox>
-        ),
-        [chart, height]
-      )}
+        </Grid>
+      </Grid>
     </MDBox>
   );
 

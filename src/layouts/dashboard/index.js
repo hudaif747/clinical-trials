@@ -23,20 +23,30 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
+import DefaultDoughnutChart from "examples/Charts/DoughnutCharts/DefaultDoughnutChart";
+import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 
 // Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
+import doughnutChartData from "layouts/dashboard/data/doughnutChartData";
+import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+import ParametersCard from "examples/Cards/new/ParametersCard";
+import doughnutDataTransformer from "examples/Charts/DoughnutCharts/DefaultDoughnutChart/configs/doughnutDataTransformer";
+import { useDataContext } from "context/dataContext";
+import React, { useMemo } from "react";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+  const { state: dataContext } = useDataContext();
+  const donutChartData = useMemo(() => {
+    return doughnutDataTransformer(dataContext);
+  }, [dataContext]);
 
   return (
     <DashboardLayout>
@@ -45,7 +55,7 @@ function Dashboard() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+              <ParametersCard
                 color="dark"
                 icon="weekend"
                 title="Bookings"
@@ -102,21 +112,27 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
+          {/* Placeholder card * Idea to add a transparent additional parameter card/}
+          {/* <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <TransparentPlaceholder />
+            </MDBox>
+          </Grid> */}
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={12} lg={12}>
               <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="website views"
+                <DefaultDoughnutChart
+                  icon={{ color: "warning", component: "donut_large" }}
+                  title="Probabilities of outcome"
                   description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
+                  height="18rem"
+                  chart={doughnutChartData}
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={6} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
@@ -131,14 +147,14 @@ function Dashboard() {
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={6} md={6} lg={6}>
               <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
+                <ReportsBarChart
+                  color="info"
+                  title="website views"
                   description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
+                  date="campaign sent 2 days ago"
+                  chart={reportsBarChartData}
                 />
               </MDBox>
             </Grid>
@@ -155,7 +171,7 @@ function Dashboard() {
           </Grid>
         </MDBox>
       </MDBox>
-      <Footer />
+      {/* <Footer /> */}
     </DashboardLayout>
   );
 }

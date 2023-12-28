@@ -22,8 +22,8 @@ const { gradients, dark } = colors;
 function configs(labels, datasets, cutout = 60) {
   const backgroundColors = [];
 
-  if (datasets.backgroundColors) {
-    datasets.backgroundColors.forEach((color) => {
+  if (datasets.backgroundColor) {
+    datasets.backgroundColor.forEach((color) => {
       if (gradients[color]) {
         if (color === "info") {
           backgroundColors.push(gradients.info.main);
@@ -61,6 +61,22 @@ function configs(labels, datasets, cutout = 60) {
       plugins: {
         legend: {
           display: false,
+        },
+        colors: {
+          forceOverride: true,
+        },
+        // to show data labels on top of the doughnut
+        datalabels: {
+          color: "#fff",
+          formatter: (value, ctx) => {
+            let sum = 0;
+            let dataArr = ctx.chart.data.datasets[0].data;
+            dataArr.map((data) => {
+              sum += data;
+            });
+            let percentage = ((value * 100) / sum).toFixed(1) + "%";
+            return percentage;
+          },
         },
       },
       interaction: {

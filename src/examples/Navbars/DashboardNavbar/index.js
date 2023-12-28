@@ -118,7 +118,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
       anchorReference={null}
       anchorOrigin={{
         vertical: "bottom",
-        // horizontal: "right",
+        horizontal: "right",
       }}
       open={Boolean(openMenu)}
       onClose={handleCloseMenu}
