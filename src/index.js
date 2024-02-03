@@ -21,6 +21,7 @@ import App from "App";
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";
 import { DataProvider } from "context/dataContext";
+import { AppDataProvider } from "context/appDataContext";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
@@ -29,7 +30,9 @@ root.render(
   <BrowserRouter>
     <MaterialUIControllerProvider>
       <DataProvider>
-        <App />
+        <AppDataProvider>
+          <App />
+        </AppDataProvider>
       </DataProvider>
     </MaterialUIControllerProvider>
   </BrowserRouter>

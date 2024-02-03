@@ -140,7 +140,7 @@ function Configurator() {
         <MDBox>
           <MDTypography variant="h5">Material UI Configurator</MDTypography>
           <MDTypography variant="body2" color="text">
-            See our dashboard options.
+            Dashboard options
           </MDTypography>
         </MDBox>
 
@@ -284,7 +284,7 @@ function Configurator() {
 
           <Switch checked={darkMode} onChange={handleDarkMode} />
         </MDBox>
-        <Divider />
+        {/* <Divider />
         <MDBox mt={3} mb={2}>
           <MDButton
             component={Link}
@@ -338,7 +338,7 @@ function Configurator() {
               &nbsp; Share
             </MDButton>
           </MDBox>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
     </ConfiguratorRoot>
   );

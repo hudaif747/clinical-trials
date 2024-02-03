@@ -10,17 +10,20 @@ import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import ParametersSelection from "additional-components/ParametersSelect";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { TextField } from "@mui/material";
 
-function ParametersCard({
+function ParametersCardDate({
   color,
   title,
   count,
   percentage,
   icon,
-  parametersArray,
   description,
-  selectedParameter,
-  updateParameter,
+  selectedDate,
+  updateDate,
 }) {
   return (
     <Card>
@@ -42,17 +45,25 @@ function ParametersCard({
             {icon}
           </Icon>
         </MDBox>
-        <MDBox textAlign="right" lineHeight={1.5}>
+        <MDBox textAlign="right" lineHeight={1.6}>
           <MDTypography variant="button" fontWeight="light" color="text">
             {title}
           </MDTypography>
           {/* <MDTypography variant="h4">{count}</MDTypography> */}
-          <MDBox maxWidth={"15rem"}>
-            <ParametersSelection
-              parameters={parametersArray}
-              selectedParameter={selectedParameter}
-              updateParameter={updateParameter}
-            />
+          <MDBox maxWidth={"12rem"}>
+            {/* <ParametersSelection parameters={parametersArray} /> */}
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                views={["month", "year"]}
+                defaultValue={dayjs(selectedDate)}
+                sx={{
+                  ".MuiInputBase-input": { padding: "5px 10px 5px 10px" },
+                }}
+                onChange={(event) => {
+                  updateDate(dayjs(event).format("YYYY-MM"));
+                }}
+              />
+            </LocalizationProvider>
           </MDBox>
         </MDBox>
       </MDBox>
@@ -75,8 +86,8 @@ function ParametersCard({
   );
 }
 
-// Setting default values for the props of ParametersCard
-ParametersCard.defaultProps = {
+// Setting default values for the props of ParametersCardDate
+ParametersCardDate.defaultProps = {
   color: "info",
   percentage: {
     color: "success",
@@ -85,8 +96,8 @@ ParametersCard.defaultProps = {
   },
 };
 
-// Typechecking props for the ParametersCard
-ParametersCard.propTypes = {
+// Typechecking props for the ParametersCardDate
+ParametersCardDate.propTypes = {
   color: PropTypes.oneOf([
     "primary",
     "secondary",
@@ -115,9 +126,8 @@ ParametersCard.propTypes = {
   }),
   icon: PropTypes.node.isRequired,
   description: PropTypes.string,
-  parametersArray: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  selectedParameter: PropTypes.string,
-  updateParameter: PropTypes.func,
+  selectedDate: PropTypes.string,
+  updateDate: PropTypes.func,
 };
 
-export default ParametersCard;
+export default ParametersCardDate;

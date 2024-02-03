@@ -8,19 +8,18 @@ import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
-import ParametersSelection from "additional-components/ParametersSelect";
 
-function ParametersCard({
+function ParametersCardInput({
   color,
   title,
   count,
   percentage,
   icon,
-  parametersArray,
   description,
-  selectedParameter,
-  updateParameter,
+  providedInput,
+  inputChange,
 }) {
   return (
     <Card>
@@ -42,16 +41,22 @@ function ParametersCard({
             {icon}
           </Icon>
         </MDBox>
-        <MDBox textAlign="right" lineHeight={1.5}>
+        <MDBox textAlign="right" lineHeight={1.6}>
           <MDTypography variant="button" fontWeight="light" color="text">
             {title}
           </MDTypography>
           {/* <MDTypography variant="h4">{count}</MDTypography> */}
-          <MDBox maxWidth={"15rem"}>
-            <ParametersSelection
-              parameters={parametersArray}
-              selectedParameter={selectedParameter}
-              updateParameter={updateParameter}
+          <MDBox maxWidth={"12rem"}>
+            {/* <ParametersSelection parameters={parametersArray} /> */}
+            <MDInput
+              type="number"
+              sx={{
+                ".MuiInputBase-input": { padding: "5px 10px 5px 10px" },
+              }}
+              defaultValue={providedInput}
+              onChange={(event) => {
+                inputChange(event.target.value);
+              }}
             />
           </MDBox>
         </MDBox>
@@ -59,15 +64,6 @@ function ParametersCard({
       <Divider />
       <MDBox pb={2} px={2}>
         <MDTypography component="p" variant="button" color="text" display="flex">
-          {/* <MDTypography
-            component="span"
-            variant="button"
-            fontWeight="bold"
-            color={percentage.color}
-          >
-            {percentage.amount}
-          </MDTypography> */}
-          {/* &nbsp;{percentage.label} */}
           {description}
         </MDTypography>
       </MDBox>
@@ -75,8 +71,8 @@ function ParametersCard({
   );
 }
 
-// Setting default values for the props of ParametersCard
-ParametersCard.defaultProps = {
+// Setting default values for the props of ParametersCardInput
+ParametersCardInput.defaultProps = {
   color: "info",
   percentage: {
     color: "success",
@@ -85,8 +81,8 @@ ParametersCard.defaultProps = {
   },
 };
 
-// Typechecking props for the ParametersCard
-ParametersCard.propTypes = {
+// Typechecking props for the ParametersCardInput
+ParametersCardInput.propTypes = {
   color: PropTypes.oneOf([
     "primary",
     "secondary",
@@ -115,9 +111,8 @@ ParametersCard.propTypes = {
   }),
   icon: PropTypes.node.isRequired,
   description: PropTypes.string,
-  parametersArray: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  selectedParameter: PropTypes.string,
-  updateParameter: PropTypes.func,
+  providedInput: PropTypes.string,
+  inputChange: PropTypes.func,
 };
 
-export default ParametersCard;
+export default ParametersCardInput;

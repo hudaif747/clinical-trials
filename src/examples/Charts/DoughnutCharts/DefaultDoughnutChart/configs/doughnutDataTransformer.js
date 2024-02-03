@@ -13,7 +13,7 @@ const doughnutDataTransformer = (dataState) => {
     ],
   };
 
-  console.log(transformedData);
+  // console.log(transformedData);
 
   return transformedData;
 };

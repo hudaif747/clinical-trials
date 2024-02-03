@@ -16,7 +16,6 @@ function TransparentPlaceholder() {
 function transparentCard(theme) {
   const { palette, boxShadows, functions, transitions, breakpoints, borders } = theme;
   const { dark, white, text, transparent, background } = palette;
-  console.log(text.main);
   return {
     boxShadow: "none",
     backdropFilter: "none",

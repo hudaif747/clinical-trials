@@ -30,23 +30,42 @@ import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 
 // Data
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
-import doughnutChartData from "layouts/dashboard/data/doughnutChartData";
+import doughnutChartData1 from "layouts/dashboard/data/doughnutChartData1";
+import doughnutChartData2 from "layouts/dashboard/data/doughnutChartData2";
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import ParametersCard from "examples/Cards/new/ParametersCard";
+import ParametersCardDate from "examples/Cards/new/ParametersCardDate";
 import doughnutDataTransformer from "examples/Charts/DoughnutCharts/DefaultDoughnutChart/configs/doughnutDataTransformer";
 import { useDataContext } from "context/dataContext";
 import React, { useMemo } from "react";
+import parametersArray from "../../static/parameters.json";
+import ParametersCardInput from "examples/Cards/new/ParametersCardInput";
+import ParametersCardTextArea from "examples/Cards/new/ParametersCardTextArea";
+import MDButton from "components/MDButton";
+import { useAppDataContext } from "context/appDataContext";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
   const { state: dataContext } = useDataContext();
+  const { state: appDataContext } = useAppDataContext();
   const donutChartData = useMemo(() => {
     return doughnutDataTransformer(dataContext);
   }, [dataContext]);
+
+  const {
+    updatePredictionTitle,
+    updatePredictionSummary,
+    updateSponsor,
+    updatePhase,
+    updateCondition,
+    updateEnrollment,
+    updateDate,
+    submit,
+  } = useAppDataContext();
 
   return (
     <DashboardLayout>
@@ -55,61 +74,151 @@ function Dashboard() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ParametersCard
-                color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
+              <ParametersCardTextArea
+                icon="leaderboard"
+                title="Title"
+                count="2,300"
+                color="warning"
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
+                  amount: "+3%",
+                  label: "than last month",
                 }}
+                description={"Title for the prediction"}
+                defaultText={appDataContext.predictionTitle}
+                updateFunction={updatePredictionTitle}
               />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+              <ParametersCardTextArea
+                color="secondary"
                 icon="leaderboard"
-                title="Today's Users"
+                title="Summary"
                 count="2,300"
                 percentage={{
                   color: "success",
                   amount: "+3%",
                   label: "than last month",
                 }}
+                description={"Summary for the prediction"}
+                defaultText={appDataContext.predictionSummary}
+                updateFunction={updatePredictionSummary}
               />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+              <ParametersCard
+                color="dark"
+                icon="weekend"
+                title="Sponsor"
+                count={281}
+                percentage={{
+                  color: "success",
+                  amount: "+55%",
+                  label: "than lask week",
+                }}
+                description={"Name of the sponsor company"}
+                parametersArray={parametersArray.sponsor}
+                selectedParameter={appDataContext.sponsor}
+                updateParameter={updateSponsor}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ParametersCard
+                icon="leaderboard"
+                title="Phase"
+                count="2,300"
+                percentage={{
+                  color: "success",
+                  amount: "+3%",
+                  label: "than last month",
+                }}
+                description={"Current phase of the trial"}
+                parametersArray={parametersArray.phase}
+                selectedParameter={appDataContext.phase}
+                updateParameter={updatePhase}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ParametersCardDate
                 color="success"
                 icon="store"
-                title="Revenue"
+                title="Start Date"
                 count="34k"
                 percentage={{
                   color: "success",
                   amount: "+1%",
                   label: "than yesterday",
                 }}
+                description={"Start Month and Year of the trial"}
+                selectedDate={appDataContext.startDate}
+                updateDate={updateDate}
               />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+              <ParametersCardInput
                 color="primary"
                 icon="person_add"
-                title="Followers"
+                title="Enrollment"
                 count="+91"
                 percentage={{
                   color: "success",
                   amount: "",
                   label: "Just updated",
                 }}
+                description="Number of participants in the trials"
+                providedInput={appDataContext.enrollment}
+                inputChange={updateEnrollment}
               />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ParametersCard
+                icon="leaderboard"
+                color="error"
+                title="Condition"
+                count="2,300"
+                percentage={{
+                  color: "success",
+                  amount: "+3%",
+                  label: "than last month",
+                }}
+                description={"Type of the medical condition"}
+                parametersArray={parametersArray.condition}
+                selectedParameter={appDataContext.condition}
+                updateParameter={updateCondition}
+              />
+            </MDBox>
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              height="100%"
+              pb={1.5}
+            >
+              <MDButton
+                variant={"contained"}
+                color={"info"}
+                // fullWidth
+                // style={{ flex: 1 }}
+                size={"large"}
+                onClick={submit}
+              >
+                Predict
+              </MDButton>
             </MDBox>
           </Grid>
           {/* Placeholder card * Idea to add a transparent additional parameter card/}
@@ -125,10 +234,12 @@ function Dashboard() {
               <MDBox mb={3}>
                 <DefaultDoughnutChart
                   icon={{ color: "warning", component: "donut_large" }}
-                  title="Probabilities of outcome"
-                  description="Last Campaign Performance"
+                  title1="All Probabilities"
+                  description1="Probabilities of all status"
+                  title2="Success or Failure Probabilities"
+                  description2="Probabilities of success and failure status"
                   height="18rem"
-                  chart={doughnutChartData}
+                  chart={doughnutChartData1}
                 />
               </MDBox>
             </Grid>
@@ -160,7 +271,7 @@ function Dashboard() {
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox>
+        {/* <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={8}>
               <Projects />
@@ -169,9 +280,9 @@ function Dashboard() {
               <OrdersOverview />
             </Grid>
           </Grid>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
-      {/* <Footer /> */}
+      <Footer />
     </DashboardLayout>
   );
 }

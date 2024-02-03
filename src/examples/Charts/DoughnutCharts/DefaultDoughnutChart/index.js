@@ -40,10 +40,10 @@ import doughnutChartTable from "layouts/tables/data/doughnutChartTable";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Colors, ChartDataLabels);
 
-function DefaultDoughnutChart({ icon, title, description, height, chart }) {
+function DefaultDoughnutChart({ icon, title1, title2, description1, description2, height, chart }) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {}, chart.cutout);
 
-  console.log("From chart", data);
+  // console.log("From chart", data);
 
   const { columns, rows } = doughnutChartTable();
 
@@ -51,8 +51,8 @@ function DefaultDoughnutChart({ icon, title, description, height, chart }) {
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
       <Grid container display={"flex"}>
         <Grid item xs={6}>
-          {title || description ? (
-            <MDBox display="flex" px={description ? 1 : 0} pt={description ? 1 : 0}>
+          {title1 || description1 ? (
+            <MDBox display="flex" px={description1 ? 1 : 0} pt={description1 ? 1 : 0}>
               {icon.component && (
                 <MDBox
                   width="4rem"
@@ -72,10 +72,10 @@ function DefaultDoughnutChart({ icon, title, description, height, chart }) {
                 </MDBox>
               )}
               <MDBox mt={icon.component ? -2 : 0}>
-                {title && <MDTypography variant="h6">{title}</MDTypography>}
+                {title1 && <MDTypography variant="h6">{title1}</MDTypography>}
                 <MDBox mb={2}>
                   <MDTypography component="div" variant="button" color="text">
-                    {description}
+                    {description1}
                   </MDTypography>
                 </MDBox>
               </MDBox>
@@ -91,6 +91,46 @@ function DefaultDoughnutChart({ icon, title, description, height, chart }) {
           )}
         </Grid>
         <Grid item xs={6}>
+          {title2 || description2 ? (
+            <MDBox display="flex" px={description2 ? 1 : 0} pt={description2 ? 1 : 0}>
+              {/* {icon.component && (
+                <MDBox
+                  width="4rem"
+                  height="4rem"
+                  bgColor={icon.color || "dark"}
+                  variant="gradient"
+                  coloredShadow={icon.color || "dark"}
+                  borderRadius="xl"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  color="white"
+                  mt={-5}
+                  mr={2}
+                >
+                  <Icon fontSize="medium">{icon.component}</Icon>
+                </MDBox>
+              )} */}
+              <MDBox mt={icon.component ? -2 : 0}>
+                {title2 && <MDTypography variant="h6">{title2}</MDTypography>}
+                <MDBox mb={2}>
+                  <MDTypography component="div" variant="button" color="text">
+                    {description2}
+                  </MDTypography>
+                </MDBox>
+              </MDBox>
+            </MDBox>
+          ) : null}
+          {useMemo(
+            () => (
+              <MDBox height={height}>
+                <Doughnut data={data} options={options} redraw />
+              </MDBox>
+            ),
+            [chart, height]
+          )}
+        </Grid>
+        {/* Table for doughnut <Grid item xs={6}>
           <MDBox pt={3}>
             <DataTable
               table={{ columns, rows }}
@@ -100,19 +140,21 @@ function DefaultDoughnutChart({ icon, title, description, height, chart }) {
               noEndBorder
             />
           </MDBox>
-        </Grid>
+        </Grid> */}
       </Grid>
     </MDBox>
   );
 
-  return title || description ? <Card>{renderChart}</Card> : renderChart;
+  return title1 || description1 ? <Card>{renderChart}</Card> : renderChart;
 }
 
 // Setting default values for the props of DefaultDoughnutChart
 DefaultDoughnutChart.defaultProps = {
   icon: { color: "info", component: "" },
-  title: "",
-  description: "",
+  title1: "",
+  description1: "",
+  title2: "",
+  description2: "",
   height: "19.125rem",
 };
 
@@ -131,8 +173,10 @@ DefaultDoughnutChart.propTypes = {
     ]),
     component: PropTypes.node,
   }),
-  title: PropTypes.string,
-  description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  title1: PropTypes.string,
+  description1: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  title2: PropTypes.string,
+  description2: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   chart: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
 };

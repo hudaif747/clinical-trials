@@ -29,10 +29,11 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
+import transactionsTableData from "layouts/tables/data/transactionsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 
 function Tables() {
-  const { columns, rows } = authorsTableData();
+  const { columns, rows } = transactionsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
 
   return (
@@ -53,7 +54,7 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Authors Table
+                  Transactions
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
@@ -67,7 +68,7 @@ function Tables() {
               </MDBox>
             </Card>
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <Card>
               <MDBox
                 mx={2}
@@ -93,10 +94,10 @@ function Tables() {
                 />
               </MDBox>
             </Card>
-          </Grid>
+          </Grid> */}
         </Grid>
       </MDBox>
-      {/* <Footer /> */}
+      <Footer />
     </DashboardLayout>
   );
 }
