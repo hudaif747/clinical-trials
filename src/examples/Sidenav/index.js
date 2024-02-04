@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useEffect } from "react";
 
 // react-router-dom components
-import { useLocation, NavLink } from "react-router-dom";
+import { useLocation, NavLink, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -82,6 +82,13 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     // Remove event listener on cleanup
     return () => window.removeEventListener("resize", handleMiniSidenav);
   }, [dispatch, location]);
+
+  const navigate = useNavigate();
+
+  const handleSignout = () => {
+    sessionStorage.setItem("active", false);
+    navigate("/dashboard");
+  };
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
@@ -181,12 +188,13 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       <List>{renderRoutes}</List>
       <MDBox p={2} mt="auto">
         <MDButton
-          component="a"
-          href="/authentication/sign-in"
+          // component="a"
+          // href="/authentication/sign-in"
           rel="noreferrer"
           variant="gradient"
           color={"error"}
           fullWidth
+          onClick={handleSignout}
         >
           sign out
         </MDButton>

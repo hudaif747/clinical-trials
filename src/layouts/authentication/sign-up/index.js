@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -31,8 +31,83 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+import { useState } from "react";
+import axios from "axios";
+import MDSnackbar from "components/MDSnackbar";
 
 function Cover() {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+  const navigate = useNavigate();
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successSB, setSuccessSB] = useState(false);
+  const closeSuccessSB = () => setSuccessSB(false);
+
+  const [errorSB, setErrorSB] = useState(false);
+  const closeErrorSB = () => setErrorSB(false);
+
+  const apiUrl = process.env.REACT_APP_API_ENDPOINT;
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleSubmit = () => {
+    const requestBody = formData;
+
+    axios
+      .post(`${apiUrl}/register_user`, requestBody)
+      .then((response) => {
+        // Handle the response data
+        console.log("Response:", response);
+        setSuccessSB(true);
+        setTimeout(() => {
+          navigate("/authentication/sign-in");
+        }, 2000);
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error("Error registering:", error);
+        setErrorMsg(error.response.data.error);
+        setErrorSB(true);
+        // setDonutLoading(false);
+      });
+  };
+
+  const renderSuccessSB = (
+    <MDSnackbar
+      color="success"
+      icon="check"
+      title="Success"
+      content="Succesfully registered! Taking you to login page now."
+      // dateTime="11 mins ago"
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite
+    />
+  );
+
+  const renderErrorSB = (
+    <MDSnackbar
+      color="error"
+      icon="warning"
+      title="Failed to register."
+      content={"Failed to register. " + errorMsg}
+      // dateTime="11 mins ago"
+      open={errorSB}
+      onClose={closeErrorSB}
+      close={closeErrorSB}
+      bgWhite
+    />
+  );
+
   return (
     <CoverLayout image={bgImage}>
       <Card>
@@ -48,24 +123,35 @@ function Cover() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Join us today
+            Registration
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Enter your email and password to register
+            Enter a username and password to register
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+              <MDInput
+                id="username"
+                type="text"
+                label="Username"
+                variant="standard"
+                fullWidth
+                onChange={handleInputChange}
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput
+                id="password"
+                type="password"
+                label="Password"
+                variant="standard"
+                fullWidth
+                onChange={handleInputChange}
+              />
             </MDBox>
-            <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
-            </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
+            {/* <MDBox display="flex" alignItems="center" ml={-1}>
               <Checkbox />
               <MDTypography
                 variant="button"
@@ -85,9 +171,9 @@ function Cover() {
               >
                 Terms and Conditions
               </MDTypography>
-            </MDBox>
+            </MDBox> */}
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton variant="gradient" color="info" fullWidth onClick={handleSubmit}>
                 sign in
               </MDButton>
             </MDBox>
@@ -109,6 +195,8 @@ function Cover() {
           </MDBox>
         </MDBox>
       </Card>
+      {renderSuccessSB}
+      {renderErrorSB}
     </CoverLayout>
   );
 }

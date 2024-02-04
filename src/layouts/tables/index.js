@@ -28,13 +28,28 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
 import transactionsTableData from "layouts/tables/data/transactionsTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Tables() {
-  const { columns, rows } = transactionsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const navigate = useNavigate();
+  const [tableData, setTableData] = useState({ columns: [], rows: [] });
+  useEffect(() => {
+    const isAuthenticated = sessionStorage.getItem("active");
+    if (isAuthenticated == "false" || isAuthenticated === null) {
+      navigate("/dashboard");
+    }
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await transactionsTableData();
+      setTableData(result);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -59,8 +74,8 @@ function Tables() {
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
+                  table={{ columns: tableData.columns, rows: tableData.rows }}
+                  // isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
                   noEndBorder

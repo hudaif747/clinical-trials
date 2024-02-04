@@ -15,7 +15,7 @@ Coded by www.creative-tim.com
 
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 import App from "App";
 
 // Material Dashboard 2 React Context Provider
@@ -27,7 +27,7 @@ const container = document.getElementById("app");
 const root = createRoot(container);
 
 root.render(
-  <BrowserRouter>
+  <HashRouter>
     <MaterialUIControllerProvider>
       <DataProvider>
         <AppDataProvider>
@@ -35,5 +35,5 @@ root.render(
         </AppDataProvider>
       </DataProvider>
     </MaterialUIControllerProvider>
-  </BrowserRouter>
+  </HashRouter>
 );

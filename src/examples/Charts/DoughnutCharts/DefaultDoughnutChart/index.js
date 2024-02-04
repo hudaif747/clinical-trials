@@ -33,15 +33,34 @@ import MDTypography from "components/MDTypography";
 
 // DefaultDoughnutChart configurations
 import configs from "examples/Charts/DoughnutCharts/DefaultDoughnutChart/configs";
-import { Grid } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 import DataTable from "examples/Tables/DataTable";
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import doughnutChartTable from "layouts/tables/data/doughnutChartTable";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Colors, ChartDataLabels);
 
-function DefaultDoughnutChart({ icon, title1, title2, description1, description2, height, chart }) {
-  const { data, options } = configs(chart.labels || [], chart.datasets || {}, chart.cutout);
+function DefaultDoughnutChart({
+  icon,
+  title1,
+  title2,
+  description1,
+  description2,
+  height,
+  chart1,
+  chart2,
+  loading,
+}) {
+  const { data: data1, options: options1 } = configs(
+    chart1.labels || [],
+    chart1.datasets || {},
+    chart1.cutout
+  );
+  const { data: data2, options: options2 } = configs(
+    chart2.labels || [],
+    chart2.datasets || {},
+    chart2.cutout
+  );
 
   // console.log("From chart", data);
 
@@ -83,11 +102,15 @@ function DefaultDoughnutChart({ icon, title1, title2, description1, description2
           ) : null}
           {useMemo(
             () => (
-              <MDBox height={height}>
-                <Doughnut data={data} options={options} redraw />
+              <MDBox height={height} display="flex" justifyContent="center" alignItems="center">
+                {loading ? (
+                  <CircularProgress size={60} />
+                ) : (
+                  <Doughnut data={data1} options={options1} redraw />
+                )}
               </MDBox>
             ),
-            [chart, height]
+            [chart1, height, loading]
           )}
         </Grid>
         <Grid item xs={6}>
@@ -123,11 +146,15 @@ function DefaultDoughnutChart({ icon, title1, title2, description1, description2
           ) : null}
           {useMemo(
             () => (
-              <MDBox height={height}>
-                <Doughnut data={data} options={options} redraw />
+              <MDBox height={height} display="flex" justifyContent="center" alignItems="center">
+                {loading ? (
+                  <CircularProgress size={60} />
+                ) : (
+                  <Doughnut data={data2} options={options2} redraw />
+                )}
               </MDBox>
             ),
-            [chart, height]
+            [chart2, height, loading]
           )}
         </Grid>
         {/* Table for doughnut <Grid item xs={6}>
@@ -178,7 +205,9 @@ DefaultDoughnutChart.propTypes = {
   title2: PropTypes.string,
   description2: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  chart: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
+  chart1: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
+  chart2: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
+  loading: PropTypes.bool,
 };
 
 export default DefaultDoughnutChart;

@@ -49,7 +49,7 @@ function configs(labels, datasets, cutout = 60) {
           tension: 0.9,
           pointRadius: 2,
           borderWidth: 2,
-          backgroundColor: backgroundColors,
+          // backgroundColor: backgroundColors,
           fill: false,
           data: datasets.data,
         },
@@ -60,7 +60,7 @@ function configs(labels, datasets, cutout = 60) {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: false,
+          display: true,
         },
         colors: {
           forceOverride: true,
@@ -68,6 +68,7 @@ function configs(labels, datasets, cutout = 60) {
         // to show data labels on top of the doughnut
         datalabels: {
           color: "#fff",
+          offset: 1,
           formatter: (value, ctx) => {
             let sum = 0;
             let dataArr = ctx.chart.data.datasets[0].data;

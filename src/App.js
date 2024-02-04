@@ -32,19 +32,16 @@ import Configurator from "examples/Configurator";
 
 // Material Dashboard 2 React themes
 import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
 
 // Material Dashboard 2 React Dark Mode themes
 import themeDark from "assets/theme-dark";
-import themeDarkRTL from "assets/theme-dark/theme-rtl";
 
 // RTL plugins
 import rtlPlugin from "stylis-plugin-rtl";
-import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
-import routes from "routes";
+import { routesSideNav } from "routes";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
@@ -52,6 +49,10 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+import Dashboard from "layouts/dashboard";
+import Tables from "layouts/tables";
+import SignIn from "layouts/authentication/sign-in";
+import SignUp from "layouts/authentication/sign-up";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -155,7 +156,7 @@ export default function App() {
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
             brandName="Clinical Trials Project"
-            routes={routes}
+            routes={routesSideNav}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
@@ -164,7 +165,10 @@ export default function App() {
         </>
       )}
       <Routes>
-        {getRoutes(routes)}
+        <Route exact path="/dashboard" element={<Dashboard />} key="dashboard" />
+        <Route exact path="/transactions" element={<Tables />} key="transactions" />
+        <Route exact path="/authentication/sign-up" element={<SignUp />} key="sign-up" />
+        <Route exact path="/authentication/sign-in" element={<SignIn />} key="sign-in" />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </ThemeProvider>

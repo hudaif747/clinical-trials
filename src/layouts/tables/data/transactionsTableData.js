@@ -1,88 +1,89 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
+import axios from "axios";
+import dayjs from "dayjs";
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+export default async function data() {
+  const apiUrl = process.env.REACT_APP_API_ENDPOINT;
+  try {
+    // Make the GET request to fetch data
+    const response = await axios.get(`${apiUrl}/get_history`);
 
-Coded by www.creative-tim.com
+    const getMonthName = (numericMonth) => {
+      const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
 
- =========================================================
+      const index = parseInt(numericMonth, 10) - 1; // Adjust for 0-based index
+      return months[index] || "";
+    };
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+    // Check if the response is successful (status code 200)
+    if (response.status === 200) {
+      // Extract the data from the response
+      const fetchedData = response.data;
 
-// Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import MDAvatar from "components/MDAvatar";
-import MDBadge from "components/MDBadge";
+      // Map the fetched data to match the structure of your rows
+      const mappedData = fetchedData.map((item) => ({
+        id: item.id,
+        datetime: dayjs(item.datetime).format("YYYY-MM-DD"),
+        sponsor: item.sponsor,
+        phase: item.phase,
+        startYear: item.start_year,
+        startMonth: getMonthName(item.start_month),
+        enrollment: item.enrollment,
+        conditions: item.condition,
+        predictedStatus: item.predicted_status,
+        predictedStatusWithoutCombine: item.predicted_status_without_combine,
+      }));
 
-// Images
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
+      // Return the updated data structure with columns and mapped rows
+      return {
+        columns: [
+          { Header: "ID", accessor: "id", width: "5%", align: "center" },
+          { Header: "Date", accessor: "datetime", width: "10%", align: "left" },
+          { Header: "Sponsor", accessor: "sponsor", width: "15%", align: "left" },
+          { Header: "Phase", accessor: "phase", width: "10%", align: "left" },
+          { Header: "Start Year", accessor: "startYear", width: "8%", align: "center" },
+          { Header: "Start Month", accessor: "startMonth", width: "8%", align: "center" },
+          { Header: "Enrollment", accessor: "enrollment", width: "10%", align: "center" },
+          { Header: "Conditions", accessor: "conditions", width: "10%", align: "left" },
+          {
+            Header: "Predicted Status",
+            accessor: "predictedStatus",
+            width: "10%",
+            align: "center",
+          },
+          {
+            Header: "Predicted Status Without Combine",
+            accessor: "predictedStatusWithoutCombine",
+            width: "10%",
+            align: "center",
+          },
+        ],
+        rows: mappedData,
+      };
+    } else {
+      // Handle other status codes if needed
+      console.error(`Unexpected status code: ${response.status}`);
+    }
+  } catch (error) {
+    // Handle errors from the Axios request
+    console.error("Error fetching data:", error.message);
+  }
 
-export default function data() {
+  // Return a default structure in case of an error
   return {
-    columns: [
-      { Header: "id", accessor: "id", width: "5%", align: "center" },
-      { Header: "datetime", accessor: "datetime", width: "10%", align: "left" },
-      { Header: "sponsor", accessor: "sponsor", width: "15%", align: "left" },
-      { Header: "phase", accessor: "phase", width: "10%", align: "left" },
-      { Header: "start year", accessor: "startYear", width: "8%", align: "center" },
-      { Header: "start month", accessor: "startMonth", width: "8%", align: "center" },
-      { Header: "enrollment", accessor: "enrollment", width: "10%", align: "center" },
-      { Header: "conditions", accessor: "conditions", width: "10%", align: "left" },
-      { Header: "predicted status", accessor: "predictedStatus", width: "10%", align: "center" },
-      {
-        Header: "predicted status without combine",
-        accessor: "predictedStatusWithoutCombine",
-        width: "10%",
-        align: "center",
-      },
-    ],
-
-    rows: [
-      {
-        id: 1,
-        datetime: "2024-02-03 09:30:00",
-        sponsor: "ABC Corporation",
-        phase: "Phase 1",
-        startYear: 2023,
-        startMonth: "January",
-        enrollment: 100,
-        conditions: "Normal",
-        predictedStatus: "Success",
-        predictedStatusWithoutCombine: "Success",
-      },
-      {
-        id: 2,
-        datetime: "2024-02-04 14:15:00",
-        sponsor: "XYZ Ltd",
-        phase: "Phase 2",
-        startYear: 2022,
-        startMonth: "March",
-        enrollment: 75,
-        conditions: "High",
-        predictedStatus: "Pending",
-        predictedStatusWithoutCombine: "Pending",
-      },
-      {
-        id: 3,
-        datetime: "2024-02-05 11:45:00",
-        sponsor: "LMN Corporation",
-        phase: "Phase 3",
-        startYear: 2021,
-        startMonth: "July",
-        enrollment: 120,
-        conditions: "Low",
-        predictedStatus: "Failure",
-        predictedStatusWithoutCombine: "Failure",
-      },
-    ],
+    columns: [],
+    rows: [],
   };
 }

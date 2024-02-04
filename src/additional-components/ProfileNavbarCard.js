@@ -3,10 +3,17 @@ import MDAvatar from "components/MDAvatar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import burceMars from "assets/images/bruce-mars.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MDButton from "components/MDButton";
 
 function ProfileNavbarCard() {
+  const username = sessionStorage.getItem("username");
+  const navigate = useNavigate();
+
+  const handleSignout = () => {
+    sessionStorage.setItem("active", false);
+    navigate("/dashboard");
+  };
   return (
     <>
       <MDBox display="flex" justifyContent="space-between" py={1} px={1}>
@@ -22,7 +29,7 @@ function ProfileNavbarCard() {
               justifyContent="center"
             >
               <MDTypography variant="button" fontWeight="medium">
-                Luigi Mario
+                {username}
               </MDTypography>
               <MDTypography variant="caption" color="text">
                 Logged In
@@ -36,10 +43,10 @@ function ProfileNavbarCard() {
             alignItems="flex-start"
             justifyContent="center"
           >
-            <MDButton component={Link} to={"/profile"} variant="text" color="info">
+            {/* <MDButton component={Link} to={"/profile"} variant="text" color="info">
               Profile
-            </MDButton>
-            <MDButton component={Link} variant="text" color="error">
+            </MDButton> */}
+            <MDButton onClick={handleSignout} variant="text" color="error">
               Logout
             </MDButton>
           </Grid>

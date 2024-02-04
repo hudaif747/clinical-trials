@@ -21,6 +21,23 @@ const initialState = {
   startDate: formattedDate,
   enrollment: "6000",
   condition: parametersArray.condition[0],
+  prediction: {
+    predictions_combined: {
+      failed: 0.87,
+      success: 0.13,
+    },
+    predictions_without_combined: {
+      active_not_recruiting: 0,
+      completed: 0.01,
+      enrolling_by_invitation: 0.12,
+      not_yet_recruiting: 0.11,
+      recruiting: 0,
+      suspended: 0.02,
+      terminated: 0.01,
+      unknown_status: 0,
+      withdrawn: 0.73,
+    },
+  },
 };
 
 // Action Types
@@ -31,6 +48,7 @@ const UPDATE_PHASE = "UPDATE_PHASE";
 const UPDATE_ENROLLMENT = "UPDATE_ENROLLMENT";
 const UPDATE_CONDITION = "UPDATE_CONDITION";
 const UPDATE_DATE = "UPDATE_DATE";
+const UPDATE_PREDICTIONS = "UPDATE_PREDICTIONS";
 // Add other action types as needed
 
 // Reducer function
@@ -77,6 +95,13 @@ const appDataReducer = (state, action) => {
       return {
         ...state,
         startDate: action.payload,
+      };
+
+    // update predictions
+    case UPDATE_PREDICTIONS:
+      return {
+        ...state,
+        prediction: action.payload,
       };
     default:
       return state;
@@ -134,8 +159,34 @@ const AppDataProvider = ({ children }) => {
     dispatch({ type: UPDATE_DATE, payload: date });
   };
 
+  // update predictions
+  const updatePredictions = (predictions) => {
+    const transformedObj = {};
+
+    // Transform keys in predictions_combined
+    transformedObj["predictions_combined"] = {
+      failed: predictions["predictions_combined"]["Failed"],
+      success: predictions["predictions_combined"]["Success"],
+    };
+
+    // Transform keys in predictions_without_combined
+    transformedObj["predictions_without_combined"] = {
+      active_not_recruiting: predictions["predictions_without_combined"]["Active, not recruiting"],
+      completed: predictions["predictions_without_combined"]["Completed"],
+      enrolling_by_invitation:
+        predictions["predictions_without_combined"]["Enrolling by invitation"],
+      not_yet_recruiting: predictions["predictions_without_combined"]["Not yet recruiting"],
+      recruiting: predictions["predictions_without_combined"]["Recruiting"],
+      suspended: predictions["predictions_without_combined"]["Suspended"],
+      terminated: predictions["predictions_without_combined"]["Terminated"],
+      unknown_status: predictions["predictions_without_combined"]["Unknown status"],
+      withdrawn: predictions["predictions_without_combined"]["Withdrawn"],
+    };
+    dispatch({ type: UPDATE_PREDICTIONS, payload: transformedObj });
+  };
+
   const submit = () => {
-    console.log("current context state: ", state);
+    // console.log("current context state: ", state);
   };
 
   return (
@@ -149,6 +200,7 @@ const AppDataProvider = ({ children }) => {
         updateCondition,
         updateEnrollment,
         updateDate,
+        updatePredictions,
         submit,
       }}
     >

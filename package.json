@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/creativetimofficial/material-dashboard-react.git"
   },
-  "homepage": "https://hudaif747.github.io/clinical-trials-public",
+  "homepage": ".",
   "dependencies": {
     "@emotion/cache": "11.10.8",
     "@emotion/react": "11.10.8",
@@ -20,6 +20,7 @@
     "@mui/icons-material": "5.11.16",
     "@mui/material": "^5.12.3",
     "@mui/x-date-pickers": "^6.19.0",
+    "axios": "^1.6.7",
     "chart.js": "4.3.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "chroma-js": "2.4.2",

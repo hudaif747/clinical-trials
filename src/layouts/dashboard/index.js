@@ -24,37 +24,59 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
-import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import DefaultDoughnutChart from "examples/Charts/DoughnutCharts/DefaultDoughnutChart";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 
 // Data
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import doughnutChartData1 from "layouts/dashboard/data/doughnutChartData1";
-import doughnutChartData2 from "layouts/dashboard/data/doughnutChartData2";
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 
 // Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import ParametersCard from "examples/Cards/new/ParametersCard";
 import ParametersCardDate from "examples/Cards/new/ParametersCardDate";
 import doughnutDataTransformer from "examples/Charts/DoughnutCharts/DefaultDoughnutChart/configs/doughnutDataTransformer";
 import { useDataContext } from "context/dataContext";
-import React, { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import parametersArray from "../../static/parameters.json";
 import ParametersCardInput from "examples/Cards/new/ParametersCardInput";
 import ParametersCardTextArea from "examples/Cards/new/ParametersCardTextArea";
 import MDButton from "components/MDButton";
 import { useAppDataContext } from "context/appDataContext";
+import axios from "axios";
+import MDSnackbar from "components/MDSnackbar";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function Dashboard() {
-  const { sales, tasks } = reportsLineChartData;
   const { state: dataContext } = useDataContext();
   const { state: appDataContext } = useAppDataContext();
-  const donutChartData = useMemo(() => {
-    return doughnutDataTransformer(dataContext);
-  }, [dataContext]);
+
+  const [successSB, setSuccessSB] = useState(false);
+  const closeSuccessSB = () => setSuccessSB(false);
+
+  const [errorSB, setErrorSB] = useState(false);
+  const closeErrorSB = () => setErrorSB(false);
+
+  const [donutLoading, setDonutLoading] = useState(false);
+  const [chartData1, setChartData1] = useState(
+    convertPredictionsToChartDataForChart1(appDataContext.prediction.predictions_without_combined)
+  );
+  const [chartData2, setChartData2] = useState(
+    convertPredictionsToChartDataForChart2(appDataContext.prediction.predictions_combined)
+  );
+  const { sales, tasks } = reportsLineChartData;
+  // const donutChartData = useMemo(() => {
+  //   return doughnutDataTransformer(dataContext);
+  // }, [dataContext]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isAuthenticated = sessionStorage.getItem("active");
+    if (isAuthenticated == "false" || isAuthenticated === null) {
+      navigate("/authentication/sign-in");
+    }
+  });
 
   const {
     updatePredictionTitle,
@@ -64,8 +86,81 @@ function Dashboard() {
     updateCondition,
     updateEnrollment,
     updateDate,
+    updatePredictions,
     submit,
   } = useAppDataContext();
+
+  const renderSuccessSB = (
+    <MDSnackbar
+      color="success"
+      icon="check"
+      title="Success"
+      content="Prediciton results succesfully fetched!"
+      // dateTime="11 mins ago"
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite
+    />
+  );
+
+  const renderErrorSB = (
+    <MDSnackbar
+      color="error"
+      icon="warning"
+      title="Failed to fetch."
+      content="Failed to fetch prediction. Displaying previous prediction."
+      // dateTime="11 mins ago"
+      open={errorSB}
+      onClose={closeErrorSB}
+      close={closeErrorSB}
+      bgWhite
+    />
+  );
+
+  const apiUrl = process.env.REACT_APP_API_ENDPOINT;
+
+  const getPredictions = () => {
+    setDonutLoading(true);
+    const requestBody = dataTransformer(appDataContext);
+    axios
+      .post(`${apiUrl}/get_predictions`, requestBody)
+      .then((response) => {
+        // Handle the response data
+        setSuccessSB(true);
+        updatePredictions(response.data);
+        setDonutLoading(false);
+      })
+      .catch((error) => {
+        // Handle errors
+        setErrorSB(true);
+        console.error("Error making predictions:", error);
+        setDonutLoading(false);
+      });
+  };
+
+  const dataTransformer = (inputObject) => {
+    const sponsor = inputObject.sponsor;
+    const phase = inputObject.phase;
+    const [startYear, startMonth] = inputObject.startDate.split("-"); // Extracting year and month from startDate
+    const enrollment = inputObject.enrollment;
+    const condition = inputObject.condition;
+
+    // Creating the desired output object
+    const outputObject = {
+      rows: [sponsor, phase, startYear, startMonth, enrollment, condition],
+    };
+    return outputObject;
+  };
+
+  useEffect(() => {
+    setChartData1(
+      convertPredictionsToChartDataForChart1(appDataContext.prediction.predictions_without_combined)
+    );
+    setChartData2(
+      convertPredictionsToChartDataForChart2(appDataContext.prediction.predictions_combined)
+    );
+  }, [appDataContext.prediction]);
 
   return (
     <DashboardLayout>
@@ -215,7 +310,9 @@ function Dashboard() {
                 // fullWidth
                 // style={{ flex: 1 }}
                 size={"large"}
-                onClick={submit}
+                onClick={() => {
+                  getPredictions();
+                }}
               >
                 Predict
               </MDButton>
@@ -239,7 +336,9 @@ function Dashboard() {
                   title2="Success or Failure Probabilities"
                   description2="Probabilities of success and failure status"
                   height="18rem"
-                  chart={doughnutChartData1}
+                  chart1={chartData1}
+                  chart2={chartData2}
+                  loading={donutLoading}
                 />
               </MDBox>
             </Grid>
@@ -283,8 +382,45 @@ function Dashboard() {
         </MDBox> */}
       </MDBox>
       <Footer />
+      {renderSuccessSB}
+      {renderErrorSB}
     </DashboardLayout>
   );
 }
 
 export default Dashboard;
+
+// Utilities;
+
+const convertPredictionsToChartDataForChart1 = (predictions) => {
+  const labels = Object.keys(predictions).map((key) => {
+    // Transform key by removing underscores and capitalizing first letters
+    const transformedKey = key.replace(/_/g, " ").replace(/\b\w/g, (match) => match.toUpperCase());
+    return transformedKey;
+  });
+
+  const datasets = {
+    label: "All Probabilities",
+    data: Object.values(predictions),
+  };
+
+  // // Map the percentages to the corresponding labels
+  // labels.forEach((label) => {
+  //   datasets.data.push(predictions[label.toLowerCase()]);
+  // });
+
+  return { labels, datasets };
+};
+const convertPredictionsToChartDataForChart2 = (predictions) => {
+  const labels = ["Success", "Failed"];
+  const datasets = {
+    label: "Success Probabilities",
+    data: [],
+  };
+
+  // Map the probabilities to the corresponding labels
+  datasets.data.push(predictions.success); // Success
+  datasets.data.push(predictions.failed); // Failed
+
+  return { labels, datasets };
+};

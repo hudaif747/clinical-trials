@@ -65,6 +65,41 @@ const routes = [
     route: "/transactions",
     component: <Tables />,
   },
+  {
+    type: "collapse",
+    name: "Sign Up",
+    key: "sign-up",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/authentication/sign-up",
+    component: <SignUp />,
+  },
+  {
+    type: "collapse",
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/authentication/sign-in",
+    component: <SignIn />,
+  },
+];
+
+export const routesSideNav = [
+  {
+    type: "collapse",
+    name: "Dashboard",
+    key: "dashboard",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/dashboard",
+    component: <Dashboard />,
+  },
+  {
+    type: "collapse",
+    name: "Transactions",
+    key: "transactions",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/transactions",
+    component: <Tables />,
+  },
   // {
   //   type: "collapse",
   //   name: "Billing",
@@ -105,14 +140,14 @@ const routes = [
   //   route: "/authentication/sign-up",
   //   component: <SignUp />,
   // },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Sign In",
+  //   key: "sign-in",
+  //   icon: <Icon fontSize="small">login</Icon>,
+  //   route: "/authentication/sign-in",
+  //   component: <SignIn />,
+  // },
 ];
 
 export default routes;
