@@ -44,16 +44,7 @@ import { useMaterialUIController } from "context";
 
 function DefaultNavbar({ transparent, light, action }) {
   const [controller] = useMaterialUIController();
-  const {
-    miniSidenav,
-    direction,
-    layout,
-    openConfigurator,
-    sidenavColor,
-    transparentSidenav,
-    whiteSidenav,
-    darkMode,
-  } = controller;
+  const { darkMode } = controller;
 
   const [mobileNavbar, setMobileNavbar] = useState(false);
   const [mobileView, setMobileView] = useState(false);
@@ -124,12 +115,7 @@ function DefaultNavbar({ transparent, light, action }) {
             OptimaTrial
           </MDTypography>
         </MDBox>
-        <MDBox
-          component="img"
-          src={(transparentSidenav && !darkMode) || whiteSidenav ? brandWhite : brandDark}
-          alt="Brand"
-          width="3rem"
-        />
+        <MDBox component="img" src={darkMode ? brandWhite : brandDark} alt="Brand" width="3rem" />
         {/* <MDBox color="inherit" display={{ xs: "none", lg: "flex" }} m={0} p={0}>
           <DefaultNavbarLink icon="donut_large" name="dashboard" route="/dashboard" light={light} />
           <DefaultNavbarLink icon="person" name="profile" route="/profile" light={light} />

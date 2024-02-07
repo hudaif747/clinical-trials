@@ -95,6 +95,7 @@ function Dashboard() {
     updateEnrollment,
     updateDate,
     updatePredictions,
+    updateGraphData,
     submit,
   } = useAppDataContext();
 
@@ -168,7 +169,7 @@ function Dashboard() {
       .then((response) => {
         // Handle the response data
         updateFetchTIme(new Date());
-        updatePredictions(response.data);
+        updateGraphData(response.data);
         setChartLoading(false);
       })
       .catch((error) => {
