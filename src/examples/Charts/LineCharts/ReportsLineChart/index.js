@@ -43,6 +43,7 @@ import MDTypography from "components/MDTypography";
 
 // ReportsLineChart configurations
 import configs from "examples/Charts/LineCharts/ReportsLineChart/configs";
+import { CircularProgress } from "@mui/material";
 
 ChartJS.register(
   CategoryScale,
@@ -55,7 +56,7 @@ ChartJS.register(
   Filler
 );
 
-function ReportsLineChart({ color, title, description, date, chart }) {
+function ReportsLineChart({ color, title, description, date, chart, loading }) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   return (
@@ -73,7 +74,13 @@ function ReportsLineChart({ color, title, description, date, chart }) {
               mt={-5}
               height="12.5rem"
             >
-              <Line data={data} options={options} redraw />
+              {loading ? (
+                <MDBox height={"100%"} display="flex" justifyContent="center" alignItems="center">
+                  <CircularProgress size={60} sx={{ color: "#ffffff" }} />
+                </MDBox>
+              ) : (
+                <Line data={data} options={options} redraw />
+              )}
             </MDBox>
           ),
           [chart, color]
@@ -113,6 +120,7 @@ ReportsLineChart.propTypes = {
   description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   date: PropTypes.string.isRequired,
   chart: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
+  loading: PropTypes.bool,
 };
 
 export default ReportsLineChart;

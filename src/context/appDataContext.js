@@ -38,6 +38,28 @@ const initialState = {
       withdrawn: 0.73,
     },
   },
+  graphData: {
+    line_graph: {
+      mon: 3,
+      tue: 3,
+      wed: 6,
+      thurs: 7,
+      fri: 5,
+      sat: 8,
+      sun: 8,
+    },
+    bar_graph: {
+      completed: 3,
+      enrolling_by_invitation: 3,
+      recruiting: 6,
+      withdrawn: 7,
+      not_yet_recruiting: 5,
+      terminated: 8,
+      suspended: 8,
+      active_not_recruiting: 3,
+      unknown_status: 3,
+    },
+  },
 };
 
 // Action Types
@@ -49,6 +71,7 @@ const UPDATE_ENROLLMENT = "UPDATE_ENROLLMENT";
 const UPDATE_CONDITION = "UPDATE_CONDITION";
 const UPDATE_DATE = "UPDATE_DATE";
 const UPDATE_PREDICTIONS = "UPDATE_PREDICTIONS";
+const UPDATE_GRAPHDATA = "UPDATE_GRAPHDATA";
 // Add other action types as needed
 
 // Reducer function
@@ -102,6 +125,12 @@ const appDataReducer = (state, action) => {
       return {
         ...state,
         prediction: action.payload,
+      };
+    // update graph data
+    case UPDATE_GRAPHDATA:
+      return {
+        ...state,
+        graphData: action.payload,
       };
     default:
       return state;
@@ -185,6 +214,29 @@ const AppDataProvider = ({ children }) => {
     dispatch({ type: UPDATE_PREDICTIONS, payload: transformedObj });
   };
 
+  const updateGraphData = (graphData) => {
+    function transformKeys(obj) {
+      const transformed = {};
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          const transformedKey = key.toLowerCase().replace(/ /g, "_").replace(/,/, "");
+          transformed[transformedKey] = obj[key];
+        }
+      }
+      return transformed;
+    }
+
+    // Transforming each key in the 'line_graph' and 'bar_graph' objects
+    if (graphData.line_graph) {
+      graphData.line_graph = transformKeys(graphData.line_graph);
+    }
+    if (graphData.bar_graph) {
+      graphData.bar_graph = transformKeys(graphData.bar_graph);
+    }
+
+    dispatch({ type: UPDATE_GRAPHDATA, payload: graphData });
+  };
+
   const submit = () => {
     // console.log("current context state: ", state);
   };
@@ -201,6 +253,7 @@ const AppDataProvider = ({ children }) => {
         updateEnrollment,
         updateDate,
         updatePredictions,
+        updateGraphData,
         submit,
       }}
     >

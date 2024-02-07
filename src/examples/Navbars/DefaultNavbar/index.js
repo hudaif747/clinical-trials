@@ -36,13 +36,24 @@ import DefaultNavbarMobile from "examples/Navbars/DefaultNavbar/DefaultNavbarMob
 
 // Material Dashboard 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
+import brandWhite from "assets/images/logo-ct.png";
+import brandDark from "assets/images/logo-ct-dark.png";
 
 // Material Dashboard 2 React context
 import { useMaterialUIController } from "context";
 
 function DefaultNavbar({ transparent, light, action }) {
   const [controller] = useMaterialUIController();
-  const { darkMode } = controller;
+  const {
+    miniSidenav,
+    direction,
+    layout,
+    openConfigurator,
+    sidenavColor,
+    transparentSidenav,
+    whiteSidenav,
+    darkMode,
+  } = controller;
 
   const [mobileNavbar, setMobileNavbar] = useState(false);
   const [mobileView, setMobileView] = useState(false);
@@ -109,10 +120,16 @@ function DefaultNavbar({ transparent, light, action }) {
           lineHeight={1}
           pl={{ xs: 0, lg: 1 }}
         >
-          <MDTypography variant="button" fontWeight="bold" color={light ? "white" : "dark"}>
-            Clinical Trial Project
+          <MDTypography variant="h3" fontWeight="bold" color={light ? "white" : "dark"}>
+            OptimaTrial
           </MDTypography>
         </MDBox>
+        <MDBox
+          component="img"
+          src={(transparentSidenav && !darkMode) || whiteSidenav ? brandWhite : brandDark}
+          alt="Brand"
+          width="3rem"
+        />
         {/* <MDBox color="inherit" display={{ xs: "none", lg: "flex" }} m={0} p={0}>
           <DefaultNavbarLink icon="donut_large" name="dashboard" route="/dashboard" light={light} />
           <DefaultNavbarLink icon="person" name="profile" route="/profile" light={light} />

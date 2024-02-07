@@ -64,10 +64,18 @@ function Dashboard() {
   const [chartData2, setChartData2] = useState(
     convertPredictionsToChartDataForChart2(appDataContext.prediction.predictions_combined)
   );
-  const { sales, tasks } = reportsLineChartData;
-  // const donutChartData = useMemo(() => {
-  //   return doughnutDataTransformer(dataContext);
-  // }, [dataContext]);
+
+  const [chartLoading, setChartLoading] = useState(false);
+  const [barChartData, setBarChartData] = useState(
+    convertBarGraphData(appDataContext.graphData.bar_graph)
+  );
+  const [lineChartData, setLineChartData] = useState(
+    convertLineGraphData(appDataContext.graphData.line_graph)
+  );
+  const [errorChartSB, setErrorChartSB] = useState(false);
+  const closeErrorChartSB = () => setErrorSB(false);
+
+  const [updateMessage, setUpdateMessage] = useState("Updation time");
 
   const navigate = useNavigate();
 
@@ -118,6 +126,20 @@ function Dashboard() {
     />
   );
 
+  const renderErrorChartSB = (
+    <MDSnackbar
+      color="error"
+      icon="warning"
+      title="Failed to fetch Graph Chart."
+      content="Failed to fetch graph charts. Displaying previous data."
+      // dateTime="11 mins ago"
+      open={errorChartSB}
+      onClose={closeErrorChartSB}
+      close={closeErrorChartSB}
+      bgWhite
+    />
+  );
+
   const apiUrl = process.env.REACT_APP_API_ENDPOINT;
 
   const getPredictions = () => {
@@ -137,6 +159,30 @@ function Dashboard() {
         console.error("Error making predictions:", error);
         setDonutLoading(false);
       });
+  };
+
+  const getGraphData = () => {
+    setChartLoading(true);
+    axios
+      .get(`${apiUrl}/get_graph_data`)
+      .then((response) => {
+        // Handle the response data
+        updateFetchTIme(new Date());
+        updatePredictions(response.data);
+        setChartLoading(false);
+      })
+      .catch((error) => {
+        // Handle errors
+        updateFetchTIme(new Date());
+        setErrorChartSB(true);
+        console.error("Error getting bar graph data:", error);
+        setChartLoading(false);
+      });
+  };
+
+  const updateFetchTIme = (fetchTime) => {
+    const message = timeSince(fetchTime);
+    setUpdateMessage(message);
   };
 
   const dataTransformer = (inputObject) => {
@@ -161,6 +207,23 @@ function Dashboard() {
       convertPredictionsToChartDataForChart2(appDataContext.prediction.predictions_combined)
     );
   }, [appDataContext.prediction]);
+
+  useEffect(() => {
+    setBarChartData(convertBarGraphData(appDataContext.graphData.bar_graph));
+    setLineChartData(convertLineGraphData(appDataContext.graphData.line_graph));
+  }, [appDataContext.graphData]);
+
+  // for checking sync time
+  useEffect(() => {
+    // You might also want to set up an interval to regularly update the message
+    const interval = setInterval(() => {
+      if (updateMessage !== "Updation time") {
+        updateFetchTIme(new Date());
+      }
+    }, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <DashboardLayout>
@@ -312,6 +375,7 @@ function Dashboard() {
                 size={"large"}
                 onClick={() => {
                   getPredictions();
+                  getGraphData();
                 }}
               >
                 Predict
@@ -346,14 +410,11 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
+                  title="weekly activity"
+                  description={<>Predictions done on a weekly basis.</>}
+                  date={updateMessage}
+                  loading={chartLoading}
+                  chart={lineChartData}
                 />
               </MDBox>
             </Grid>
@@ -361,10 +422,11 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
+                  title="Predictions overview"
+                  description="Overview of the past predictions "
+                  date={updateMessage}
+                  loading={chartLoading}
+                  chart={barChartData}
                 />
               </MDBox>
             </Grid>
@@ -384,6 +446,7 @@ function Dashboard() {
       <Footer />
       {renderSuccessSB}
       {renderErrorSB}
+      {renderErrorChartSB}
     </DashboardLayout>
   );
 }
@@ -423,4 +486,69 @@ const convertPredictionsToChartDataForChart2 = (predictions) => {
   datasets.data.push(predictions.failed); // Failed
 
   return { labels, datasets };
+};
+
+const convertBarGraphData = (barGraphData) => {
+  // Function to capitalize the first letter of each word
+  const capitalizeWords = (str) =>
+    str
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
+  // Extracting labels by transforming keys
+  const labels = Object.keys(barGraphData).map((key) => capitalizeWords(key));
+
+  // Extracting data in the same order as labels
+  const data = Object.values(barGraphData);
+
+  // Constructing the result object
+  return {
+    labels: labels,
+    datasets: {
+      label: "Predictions Overview",
+      data: data,
+    },
+  };
+};
+const convertLineGraphData = (barGraphData) => {
+  // Function to capitalize the first letter of each word
+  const capitalizeWords = (str) =>
+    str
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
+  // Extracting labels by transforming keys
+  const labels = Object.keys(barGraphData).map((key) => capitalizeWords(key));
+
+  // Extracting data in the same order as labels
+  const data = Object.values(barGraphData);
+
+  // Constructing the result object
+  return {
+    labels: labels,
+    datasets: {
+      label: "Weekly Activity",
+      data: data,
+    },
+  };
+};
+
+//functions to fetch sync time
+
+const timeSince = (fetchTime) => {
+  const now = new Date();
+  const difference = now - fetchTime; // Difference in milliseconds
+  const seconds = Math.floor(difference / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+
+  if (hours > 0) {
+    return `was updated ${hours} hour(s) ago`;
+  } else if (minutes > 0) {
+    return `was updated ${minutes} min(s) ago`;
+  } else {
+    return `was updated ${seconds} second(s) ago`;
+  }
 };

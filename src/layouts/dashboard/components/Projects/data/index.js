@@ -79,7 +79,7 @@ export default function data() {
 
     rows: [
       {
-        companies: <Company image={logoXD} name="Material UI XD Version" />,
+        companies: <Company image={logoXD} name="OptimaTrial" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([

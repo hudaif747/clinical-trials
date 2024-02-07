@@ -41,10 +41,11 @@ import MDTypography from "components/MDTypography";
 
 // ReportsBarChart configurations
 import configs from "examples/Charts/BarCharts/ReportsBarChart/configs";
+import { CircularProgress } from "@mui/material";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-function ReportsBarChart({ color, title, description, date, chart }) {
+function ReportsBarChart({ color, title, description, date, chart, loading }) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   return (
@@ -62,10 +63,16 @@ function ReportsBarChart({ color, title, description, date, chart }) {
               mt={-5}
               height="12.5rem"
             >
-              <Bar data={data} options={options} redraw />
+              {loading ? (
+                <MDBox height={"100%"} display="flex" justifyContent="center" alignItems="center">
+                  <CircularProgress size={60} sx={{ color: "#ffffff" }} />
+                </MDBox>
+              ) : (
+                <Bar data={data} options={options} redraw />
+              )}
             </MDBox>
           ),
-          [color, chart]
+          [color, chart, loading]
         )}
         <MDBox pt={3} pb={1} px={1}>
           <MDTypography variant="h6" textTransform="capitalize">
@@ -102,6 +109,7 @@ ReportsBarChart.propTypes = {
   description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   date: PropTypes.string.isRequired,
   chart: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.array, PropTypes.object])).isRequired,
+  loading: PropTypes.bool,
 };
 
 export default ReportsBarChart;

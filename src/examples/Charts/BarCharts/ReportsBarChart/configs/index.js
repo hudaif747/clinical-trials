@@ -37,6 +37,15 @@ function configs(labels, datasets) {
         legend: {
           display: false,
         },
+        colors: {
+          forceOverride: false,
+        },
+        // to show data labels on top of the doughnut
+        datalabels: {
+          color: "#fff",
+          anchor: "end",
+          align: "end",
+        },
       },
       interaction: {
         intersect: false,
@@ -81,12 +90,15 @@ function configs(labels, datasets) {
             color: "#f8f9fa",
             padding: 10,
             font: {
-              size: 14,
+              size: 10,
               weight: 300,
               family: "Roboto",
               style: "normal",
               lineHeight: 2,
             },
+            autoSkip: false,
+            // maxRotation: 0,
+            // minRotation: 0,
           },
         },
       },

@@ -155,7 +155,7 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Clinical Trials Project"
+            brandName="OptimaTrial"
             routes={routesSideNav}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}

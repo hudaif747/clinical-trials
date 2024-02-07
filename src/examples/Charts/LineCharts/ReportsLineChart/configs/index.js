@@ -40,6 +40,15 @@ function configs(labels, datasets) {
         legend: {
           display: false,
         },
+        colors: {
+          forceOverride: false,
+        },
+        // to show data labels on top of the doughnut
+        datalabels: {
+          color: "#fff",
+          anchor: "end",
+          align: "end",
+        },
       },
       interaction: {
         intersect: false,
