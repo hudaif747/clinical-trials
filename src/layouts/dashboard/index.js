@@ -73,7 +73,7 @@ function Dashboard() {
     convertLineGraphData(appDataContext.graphData.line_graph)
   );
   const [errorChartSB, setErrorChartSB] = useState(false);
-  const closeErrorChartSB = () => setErrorSB(false);
+  const closeErrorChartSB = () => setErrorChartSB(false);
 
   const [updateMessage, setUpdateMessage] = useState("Updation time");
 
