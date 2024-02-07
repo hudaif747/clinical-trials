@@ -48,6 +48,8 @@ import MDSnackbar from "components/MDSnackbar";
 import { Navigate, useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const [fetchTime, setFetchTime] = useState(new Date());
+
   const { state: dataContext } = useDataContext();
   const { state: appDataContext } = useAppDataContext();
 
@@ -168,23 +170,26 @@ function Dashboard() {
       .get(`${apiUrl}/get_graph_data`)
       .then((response) => {
         // Handle the response data
-        updateFetchTIme(new Date());
+        setFetchTime(new Date());
         updateGraphData(response.data);
         setChartLoading(false);
       })
       .catch((error) => {
         // Handle errors
-        updateFetchTIme(new Date());
         setErrorChartSB(true);
         console.error("Error getting bar graph data:", error);
         setChartLoading(false);
       });
   };
 
-  const updateFetchTIme = (fetchTime) => {
+  const updateFetchTime = (fetchTime) => {
     const message = timeSince(fetchTime);
     setUpdateMessage(message);
   };
+
+  // useEffect(() => {
+  //   updateFetchTime(fetchTime);
+  // }, [fetchTime]);
 
   const dataTransformer = (inputObject) => {
     const sponsor = inputObject.sponsor;
@@ -216,12 +221,13 @@ function Dashboard() {
 
   // for checking sync time
   useEffect(() => {
+    getGraphData();
     // You might also want to set up an interval to regularly update the message
     const interval = setInterval(() => {
       if (updateMessage !== "Updation time") {
-        updateFetchTIme(new Date());
+        updateFetchTime(fetchTime);
       }
-    }, 60000); // Update every minute
+    }, 1000); // Update every minute
 
     return () => clearInterval(interval);
   }, []);
