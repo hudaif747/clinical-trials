@@ -49,7 +49,7 @@ function ParametersCard({
           {/* <MDTypography variant="h4">{count}</MDTypography> */}
           <MDBox maxWidth={"15rem"}>
             <ParametersSelection
-              parameters={parametersArray}
+              parameters={parametersArray?.sort()}
               selectedParameter={selectedParameter}
               updateParameter={updateParameter}
             />

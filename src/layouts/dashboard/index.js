@@ -215,6 +215,7 @@ function Dashboard() {
   }, [appDataContext.prediction]);
 
   useEffect(() => {
+    // console.log(appDataContext.graphData);
     setBarChartData(convertBarGraphData(appDataContext.graphData.bar_graph));
     setLineChartData(convertLineGraphData(appDataContext.graphData.line_graph));
   }, [appDataContext.graphData]);
@@ -496,6 +497,16 @@ const convertPredictionsToChartDataForChart2 = (predictions) => {
 };
 
 const convertBarGraphData = (barGraphData) => {
+  if (typeof barGraphData === "undefined" || barGraphData === null) {
+    return {
+      labels: [],
+      datasets: {
+        label: "Predictions Overview",
+        data: [],
+      },
+    };
+  }
+
   // Function to capitalize the first letter of each word
   const capitalizeWords = (str) =>
     str
@@ -519,6 +530,17 @@ const convertBarGraphData = (barGraphData) => {
   };
 };
 const convertLineGraphData = (barGraphData) => {
+  console.log(barGraphData);
+  if (typeof barGraphData === "undefined" || barGraphData === null) {
+    return {
+      labels: [],
+      datasets: {
+        label: "Predictions Overview",
+        data: [],
+      },
+    };
+  }
+
   // Function to capitalize the first letter of each word
   const capitalizeWords = (str) =>
     str
@@ -545,6 +567,7 @@ const convertLineGraphData = (barGraphData) => {
 //functions to fetch sync time
 
 const timeSince = (fetchTime) => {
+  console.log(barGraphData);
   const now = new Date();
   const difference = now - fetchTime; // Difference in milliseconds
   const seconds = Math.floor(difference / 1000);
